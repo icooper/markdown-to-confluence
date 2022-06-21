@@ -46,7 +46,7 @@ export default class Transformer {
     
     private fixPreTrailingNewline(): void {
         this.root.getElementsByTagName("pre").forEach(e => {
-            e.textContent = e.textContent.replace("\n</code>", "</code>");
+            e.innerHTML = e.innerHTML.replace("\n</code>", "</code>");
         });
     }
     
