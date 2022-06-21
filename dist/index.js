@@ -14977,7 +14977,7 @@ var Transformer = /** @class */ (function () {
     };
     Transformer.prototype.fixPreTrailingNewline = function () {
         this.root.getElementsByTagName("pre").forEach(function (e) {
-            e.textContent = e.textContent.replace("\n</code>", "</code>");
+            e.innerHTML = e.innerHTML.replace("\n</code>", "</code>");
         });
     };
     Transformer.prototype.fixPanels = function () {
