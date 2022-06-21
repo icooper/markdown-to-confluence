@@ -1,0 +1,20 @@
+name: Documentation Sync
+on:
+  push:
+    branches:
+      - development
+      - main
+  pull_request:
+
+jobs:
+  confluence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: icooper/markdown-to-confluence@v1
+        with:
+          markdown: "README.md"
+          page: "${{ secrets.CONFLUENCE_PAGE }}"
+          username: "${{ secrets.ATLASSIAN_USERNAME }}"
+          api_key: "${{ secrets.ATLASSIAN_API_KEY }}"

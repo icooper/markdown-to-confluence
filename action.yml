@@ -1,0 +1,22 @@
+# action.yml
+name: "markdown-to-confluence"
+description: "GitHub Action to render Markdown to Confluence-friendly HTML and upload to Confluence Cloud."
+branding:
+  icon: "upload-cloud"
+  color: "blue"
+inputs:
+  markdown:
+    description: "Path to the Markdown file in the repository"
+    required: true
+  page:
+    description: "URL the destination page in Confluence Cloud"
+    required: true
+  username:
+    description: "Atlassian Username"
+    required: true
+  api_key:
+    description: "Atlassian API Key"
+    required: true
+runs:
+  using: "node16"
+  main: "dist/index.js"
