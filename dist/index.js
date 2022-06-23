@@ -14844,7 +14844,7 @@ if (missing.length > 0) {
             case 0: return [4 /*yield*/, (0, promises_1.readFile)((0, path_1.join)(workspace !== null && workspace !== void 0 ? workspace : ".", filename), { encoding: "utf8" })];
             case 1:
                 markdown = _c.sent();
-                doc = new transformer_1.default(markdown);
+                doc = new transformer_1.default(filename, markdown);
                 return [4 /*yield*/, (0, confluence_1.getContent)(pageUrl, { username: username, password: password })];
             case 2:
                 metadata = _c.sent();
@@ -14945,12 +14945,14 @@ var marked_1 = __nccwpck_require__(5741);
 var parser = __importStar(__nccwpck_require__(4363));
 var macros = __importStar(__nccwpck_require__(5882));
 var Transformer = /** @class */ (function () {
-    function Transformer(markdown) {
+    function Transformer(sourceName, markdown) {
+        this.sourceName = sourceName;
         this.root = parser.parse((0, marked_1.marked)(markdown, { gfm: true }));
         this.title = this.promoteTitle();
         this.addTableOfContents();
         this.fixPreTrailingNewline();
         this.fixPanels();
+        this.addMirrorInformation();
         this.fixParagraphWhitespace();
     }
     Transformer.prototype.promoteTitle = function () {
@@ -15006,6 +15008,10 @@ var Transformer = /** @class */ (function () {
                 gp.replaceWith(macros.panel(p.innerHTML, panelType));
             }
         });
+    };
+    Transformer.prototype.addMirrorInformation = function () {
+        var repo = "https://github.com/".concat(process.env["GITHUB_REPOSITORY"]);
+        this.root.childNodes.unshift(macros.info("\n            This page is automatically mirrored from\n            <code>".concat(this.sourceName, "</code> in <a href=\"").concat(repo, "\">").concat(repo, "</a>.\n            Please make any changes to this document via GitHub.\n        ")));
     };
     Transformer.prototype.fixParagraphWhitespace = function () {
         this.root.getElementsByTagName("p").forEach(function (e) {
