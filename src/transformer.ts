@@ -5,18 +5,15 @@ import * as macros from "./macros";
 
 export default class Transformer {
     private root: parser.HTMLElement;
-    private sourceName: string;
     readonly title: string | undefined;
 
-    constructor(sourceName: string, markdown: string) {
-        this.sourceName = sourceName;
+    constructor(markdown: string) {
         this.root = parser.parse(marked(markdown, { gfm: true }));
         this.title = this.promoteTitle();
 
         this.addTableOfContents();
         this.fixPreTrailingNewline();
         this.fixPanels();
-        this.addMirrorInformation();
         this.fixParagraphWhitespace();
     }
 
@@ -83,15 +80,6 @@ export default class Transformer {
                 gp.replaceWith(macros.panel(p.innerHTML, panelType));
             }
         });
-    }
-    
-    private addMirrorInformation(): void {
-        const repo = `https://github.com/${process.env["GITHUB_REPOSITORY"]}`;
-        this.root.childNodes.unshift(macros.info(`
-            This page is automatically mirrored from
-            <code>${this.sourceName}</code> in <a href="${repo}">${repo}</a>.
-            Please make any changes to this document via GitHub.
-        `))
     }
 
     private fixParagraphWhitespace() {
