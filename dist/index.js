@@ -14775,6 +14775,29 @@ exports.putContent = putContent;
  * GitHub Action to render a Markdown file to Confluence-friendly HTML and then
  * upload the content to update an existing Confluence Cloud page.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -14818,6 +14841,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 var promises_1 = __nccwpck_require__(3292);
 var path_1 = __nccwpck_require__(1017);
 var confluence_1 = __nccwpck_require__(1804);
+var macros = __importStar(__nccwpck_require__(5882));
 var transformer_1 = __importDefault(__nccwpck_require__(8240));
 // read some environment variables
 var _a = process.env, workspace = _a.GITHUB_WORKSPACE, filename = _a.INPUT_MARKDOWN, pageUrl = _a.INPUT_PAGE, username = _a.INPUT_USERNAME, password = _a.INPUT_API_KEY;
@@ -14837,17 +14861,19 @@ if (missing.length > 0) {
     throw new Error("Missing environment variables: ".concat(missing.join(", "), "."));
 }
 (function () { return __awaiter(void 0, void 0, void 0, function () {
-    var markdown, doc, metadata, content, response;
+    var markdown, doc, metadata, repo, html, content, response;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0: return [4 /*yield*/, (0, promises_1.readFile)((0, path_1.join)(workspace !== null && workspace !== void 0 ? workspace : ".", filename), { encoding: "utf8" })];
             case 1:
                 markdown = _c.sent();
-                doc = new transformer_1.default(filename, markdown);
+                doc = new transformer_1.default(markdown);
                 return [4 /*yield*/, (0, confluence_1.getContent)(pageUrl, { username: username, password: password })];
             case 2:
                 metadata = _c.sent();
+                repo = "https://github.com/".concat(process.env["GITHUB_REPOSITORY"]);
+                html = macros.info("\n        This page is automatically mirrored from\n        <code>".concat(filename, "</code> in <a href=\"").concat(repo, "\">").concat(repo, "</a>.\n        Please make any changes to this document via GitHub.\n    ").replace("\n", "")) + doc.html;
                 content = {
                     id: metadata.id,
                     type: metadata.type,
@@ -14855,7 +14881,7 @@ if (missing.length > 0) {
                     version: { number: metadata.version.number + 1 },
                     body: {
                         editor: {
-                            value: doc.html,
+                            value: html,
                             representation: "editor"
                         }
                     }
@@ -14945,14 +14971,12 @@ var marked_1 = __nccwpck_require__(5741);
 var parser = __importStar(__nccwpck_require__(4363));
 var macros = __importStar(__nccwpck_require__(5882));
 var Transformer = /** @class */ (function () {
-    function Transformer(sourceName, markdown) {
-        this.sourceName = sourceName;
+    function Transformer(markdown) {
         this.root = parser.parse((0, marked_1.marked)(markdown, { gfm: true }));
         this.title = this.promoteTitle();
         this.addTableOfContents();
         this.fixPreTrailingNewline();
         this.fixPanels();
-        this.addMirrorInformation();
         this.fixParagraphWhitespace();
     }
     Transformer.prototype.promoteTitle = function () {
@@ -15008,10 +15032,6 @@ var Transformer = /** @class */ (function () {
                 gp.replaceWith(macros.panel(p.innerHTML, panelType));
             }
         });
-    };
-    Transformer.prototype.addMirrorInformation = function () {
-        var repo = "https://github.com/".concat(process.env["GITHUB_REPOSITORY"]);
-        this.root.childNodes.unshift(macros.info("\n            This page is automatically mirrored from\n            <code>".concat(this.sourceName, "</code> in <a href=\"").concat(repo, "\">").concat(repo, "</a>.\n            Please make any changes to this document via GitHub.\n        ")));
     };
     Transformer.prototype.fixParagraphWhitespace = function () {
         this.root.getElementsByTagName("p").forEach(function (e) {

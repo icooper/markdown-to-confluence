@@ -6,6 +6,7 @@
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { getContent, putContent } from "./confluence";
+import * as macros from "./macros";
 import Transformer from "./transformer";
 
 // read some environment variables
@@ -36,10 +37,18 @@ if (missing.length > 0) {
     const markdown = await readFile(join(workspace ?? ".", filename), { encoding: "utf8" });
 
     // transform markdown into something that Confluence can use
-    const doc = new Transformer(filename, markdown);
+    const doc = new Transformer(markdown);
 
     // get the metadata for the current version of the page
     const metadata = await getContent(pageUrl, { username, password });
+
+    // add note at the top of the confluence page
+    const repo = `https://github.com/${process.env["GITHUB_REPOSITORY"]}`;
+    const html = macros.info(`
+        This page is automatically mirrored from
+        <code>${filename}</code> in <a href="${repo}">${repo}</a>.
+        Please make any changes to this document via GitHub.
+    `.replace("\n", "")) + doc.html;
 
     // compose new content for the page
     const content = {
@@ -49,7 +58,7 @@ if (missing.length > 0) {
         version: { number: metadata.version.number + 1 },
         body: {
             editor: {
-                value: doc.html,
+                value: html,
                 representation: "editor"
             }
         }
