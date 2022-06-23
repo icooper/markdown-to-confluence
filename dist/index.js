@@ -14873,7 +14873,9 @@ if (missing.length > 0) {
             case 2:
                 metadata = _c.sent();
                 repo = "https://github.com/".concat(process.env["GITHUB_REPOSITORY"]);
-                html = macros.info("\n        This page is automatically mirrored from\n        <code>".concat(filename, "</code> in <a href=\"").concat(repo, "\">").concat(repo, "</a>.\n        Please make any changes to this document via GitHub.\n    ").replace("\n", "")) + doc.html;
+                html = macros.info("This page is automatically mirrored from " +
+                    "<code>".concat(filename, "</code> in <a href=\"").concat(repo, "\">").concat(repo, "</a>. ") +
+                    "Please make any changes to this document via GitHub.") + doc.html;
                 content = {
                     id: metadata.id,
                     type: metadata.type,
