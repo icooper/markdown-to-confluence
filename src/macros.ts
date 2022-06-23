@@ -1,12 +1,13 @@
 import parse, { HTMLElement } from "node-html-parser";
 
-export function panel(content: string, type: string): HTMLElement {
+export function panel(content: string, type: string, parameters?: string): HTMLElement {
     return parse(`
         <table
             class="wysiwyg-macro"
             data-macro-name="${type}"
             data-macro-schema-version="1"
             data-macro-body-type="RICH_TEXT"
+            data-macro-parameters="${parameters ?? ""}"
         >
             <tr>
                 <td class="wysiwyg-macro-body">
@@ -17,20 +18,20 @@ export function panel(content: string, type: string): HTMLElement {
     `);
 }
 
-export function info(content: string): HTMLElement {
-    return panel(content, "info");
+export function info(content: string, parameters?: string): HTMLElement {
+    return panel(content, "info", parameters);
 }
 
-export function warning(content: string): HTMLElement {
-    return panel(content, "note");
+export function warning(content: string, parameters?: string): HTMLElement {
+    return panel(content, "note", parameters);
 }
 
-export function success(content: string): HTMLElement {
-    return panel(content, "tip");
+export function success(content: string, parameters?: string): HTMLElement {
+    return panel(content, "tip", parameters);
 }
 
-export function error(content: string): HTMLElement {
-    return panel(content, "error");
+export function error(content: string, parameters?: string): HTMLElement {
+    return panel(content, "error", parameters);
 }
 
 export function toc(exclude?: string): HTMLElement {

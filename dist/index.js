@@ -14873,9 +14873,9 @@ if (missing.length > 0) {
             case 2:
                 metadata = _c.sent();
                 repo = "https://github.com/".concat(process.env["GITHUB_REPOSITORY"]);
-                html = macros.info("This page is automatically mirrored from " +
+                html = macros.panel("This page is automatically mirrored from " +
                     "<code>".concat(filename, "</code> in <a href=\"").concat(repo, "\">").concat(repo, "</a>. ") +
-                    "Please make any changes to this document via GitHub.") + doc.html;
+                    "Please make any changes to this document via GitHub.", "panel", "bgColor=#FFFAE6|panelIcon=:lock:|panelIconId=1f512|panelIconText=🔒") + doc.html;
                 content = {
                     id: metadata.id,
                     type: metadata.type,
@@ -14912,24 +14912,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.toc = exports.error = exports.success = exports.warning = exports.info = exports.panel = void 0;
 var node_html_parser_1 = __importDefault(__nccwpck_require__(4363));
-function panel(content, type) {
-    return (0, node_html_parser_1.default)("\n        <table\n            class=\"wysiwyg-macro\"\n            data-macro-name=\"".concat(type, "\"\n            data-macro-schema-version=\"1\"\n            data-macro-body-type=\"RICH_TEXT\"\n        >\n            <tr>\n                <td class=\"wysiwyg-macro-body\">\n                    <p>").concat(content, "</p>\n                </td>\n            </tr>\n        </table>\n    "));
+function panel(content, type, parameters) {
+    return (0, node_html_parser_1.default)("\n        <table\n            class=\"wysiwyg-macro\"\n            data-macro-name=\"".concat(type, "\"\n            data-macro-schema-version=\"1\"\n            data-macro-body-type=\"RICH_TEXT\"\n            data-macro-parameters=\"").concat(parameters !== null && parameters !== void 0 ? parameters : "", "\"\n        >\n            <tr>\n                <td class=\"wysiwyg-macro-body\">\n                    <p>").concat(content, "</p>\n                </td>\n            </tr>\n        </table>\n    "));
 }
 exports.panel = panel;
-function info(content) {
-    return panel(content, "info");
+function info(content, parameters) {
+    return panel(content, "info", parameters);
 }
 exports.info = info;
-function warning(content) {
-    return panel(content, "note");
+function warning(content, parameters) {
+    return panel(content, "note", parameters);
 }
 exports.warning = warning;
-function success(content) {
-    return panel(content, "tip");
+function success(content, parameters) {
+    return panel(content, "tip", parameters);
 }
 exports.success = success;
-function error(content) {
-    return panel(content, "error");
+function error(content, parameters) {
+    return panel(content, "error", parameters);
 }
 exports.error = error;
 function toc(exclude) {
