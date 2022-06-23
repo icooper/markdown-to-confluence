@@ -16,6 +16,7 @@ export default class Transformer {
         this.addTableOfContents();
         this.fixPreTrailingNewline();
         this.fixPanels();
+        this.addMirrorInformation();
         this.fixParagraphWhitespace();
     }
 
@@ -51,15 +52,6 @@ export default class Transformer {
             e.innerHTML = e.innerHTML.replace("\n</code>", "</code>");
         });
     }
-
-    private addMirrorInformation(): void {
-        const repo = `https://github.com/${process.env["GITHUB_REPOSITORY"]}`;
-        this.root.childNodes.unshift(macros.info(`
-            This page is automatically mirrored from
-            <code>${this.sourceName}</code> in <a href="${repo}">${repo}</a>.
-            Please make any changes to this document via GitHub.
-        `))
-    }
     
     private fixPanels(): void {
         this.root.querySelectorAll("blockquote > p > em").forEach(e => {
@@ -93,6 +85,15 @@ export default class Transformer {
         });
     }
     
+    private addMirrorInformation(): void {
+        const repo = `https://github.com/${process.env["GITHUB_REPOSITORY"]}`;
+        this.root.childNodes.unshift(macros.info(`
+            This page is automatically mirrored from
+            <code>${this.sourceName}</code> in <a href="${repo}">${repo}</a>.
+            Please make any changes to this document via GitHub.
+        `))
+    }
+
     private fixParagraphWhitespace() {
         this.root.getElementsByTagName("p").forEach(e => {
             e.innerHTML = e.innerHTML.replace(/(\r|\n|\r\n)/, " ").trim();
