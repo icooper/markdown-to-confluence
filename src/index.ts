@@ -44,11 +44,11 @@ if (missing.length > 0) {
 
     // add note at the top of the confluence page
     const repo = `https://github.com/${process.env["GITHUB_REPOSITORY"]}`;
-    const html = macros.info(`
-        This page is automatically mirrored from
-        <code>${filename}</code> in <a href="${repo}">${repo}</a>.
-        Please make any changes to this document via GitHub.
-    `.replace("\n", "")) + doc.html;
+    const html = macros.info(
+        "This page is automatically mirrored from " +
+        `<code>${filename}</code> in <a href="${repo}">${repo}</a>. `+
+        "Please make any changes to this document via GitHub."
+    ) + doc.html;
 
     // compose new content for the page
     const content = {
