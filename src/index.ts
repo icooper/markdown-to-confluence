@@ -36,7 +36,7 @@ if (missing.length > 0) {
     const markdown = await readFile(join(workspace ?? ".", filename), { encoding: "utf8" });
 
     // transform markdown into something that Confluence can use
-    const doc = new Transformer(markdown);
+    const doc = new Transformer(filename, markdown);
 
     // get the metadata for the current version of the page
     const metadata = await getContent(pageUrl, { username, password });
